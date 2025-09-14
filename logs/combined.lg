@@ -1,0 +1,2 @@
+{"level":"info","message":"hello from devops-1","service":"DevOps-api"}
+{"level":"info","message":"::1 - - [14/Sep/2025:18:49:50 +0000] \"GET / HTTP/1.1\" 200 3 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36\"","service":"DevOps-api"}
