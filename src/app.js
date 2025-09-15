@@ -22,10 +22,9 @@ app.get('/', (req, res) => {
   res.send('yoo');
 });
 app.get('/api/auth', authRoute);
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   logger.error('Unhandled error:', err);
   res.status(500).json({ error: `Server error: ${err.message}` });
-  next();
 });
 
 export default app;
