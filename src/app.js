@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { logger } from '#config/logger.js';
+import authRoute from '#routes/auth.route.js';
 const app = express();
 app.use(helmet());
 app.use(cors());
@@ -19,6 +20,12 @@ app.use(
 app.get('/', (req, res) => {
   logger.info('hello from devops-1');
   res.send('yoo');
+});
+app.get('/api/auth', authRoute);
+app.use((err, req, res, next) => {
+  logger.error('Unhandled error:', err);
+  res.status(500).json({ error: `Server error: ${err.message}` });
+  next();
 });
 
 export default app;
