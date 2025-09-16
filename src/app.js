@@ -17,6 +17,10 @@ app.use(
     stream: { write: message => logger.info(message.trim()) },
   })
 );
+app.get('/health', (req, res) => {
+  logger.info('health');
+  res.send('health');
+});
 app.get('/', (req, res) => {
   logger.info('hello from devops-1');
   res.send('yoo');
