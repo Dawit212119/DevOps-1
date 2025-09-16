@@ -15,11 +15,11 @@ export const hashPassword = async password => {
 export const createUser = async ({ name, email, password, role = 'user' }) => {
   try {
     const existingUser = await db
-      .selecte()
+      .select()
       .from(user)
       .where(eq(user.email, email))
       .limit(1);
-    if (existingUser) {
+    if (existingUser.length > 0) {
       throw new Error('User with this email already exists');
     }
     const password_hash = await hashPassword(password);
@@ -34,6 +34,7 @@ export const createUser = async ({ name, email, password, role = 'user' }) => {
         createdAt: user.createdAt,
       });
     logger.info(`User ${newUser.email} created successfully`);
+    console.log(newUser);
     return newUser;
   } catch (error) {
     logger.error(`Error creating the user: ${error}`);
@@ -52,7 +53,7 @@ export const comparePassword = async (password, hashPassword) => {
 export const authenticateUser = async ({ email, password }) => {
   try {
     const [existingUser] = await db
-      .selecte()
+      .select()
       .from(user)
       .where(eq(user.email, email))
       .limit(1);

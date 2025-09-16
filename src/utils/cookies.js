@@ -6,7 +6,7 @@ export const cookies = {
     maxAge: 15 * 60 * 1000,
   }),
   set: (res, name, token, option = {}) => {
-    res.cookies(name, token, { ...cookies.getOptions, ...option });
+    res.cookie(name, token, { ...cookies.getOptions, ...option });
   },
   clear: (res, name, option = {}) => {
     res.clearCokkie(name, { ...cookies.getOptions, ...option });
