@@ -1,0 +1,77 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_requests:
+    branches:
+      - main
+      - staging
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup nodejs 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run test
+        id: test
+        run: |
+          echo "::notice::Running test suite..."
+          npm test
+        env:
+        NODE_ENV: test
+        NODE_OPTIONS: --experimental-vm-modules
+        DATABASE_URL: ${{secrets.TEST_DATABASE_URL || ''postgresql://test:test@localhost:5432/test_devops''}}
+        JWT_SECRET: test-secret-for-ci
+        LOG_LEVEL: error
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            coverage/
+            test-results.xml
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Generate test summary
+        if: always()
+        run: |
+          echo " Test Results" >> $GITHUB_STEP_SUMMARY  
+
+          if [ "${{steps.tests.outcome}} === "success""]; then
+             echo "✅ All tests passed succesfully!" >> $GITHUB_STEP_SUMMARY 
+             echo "" >> $GITHUB_STEP_SUMMARY 
+             echo " Coverg status " >>  >> $GITHUB_STEP_SUMMARY 
+          else 
+            echo "❌ Some test fialed. Please check the logs above for details." >>  Upload coverage reports
+            echo "">>  >> $GITHUB_STEP_SUMMARY 
+            echo " Next Steps" >> >> $GITHUB_STEP_SUMMARY 
+            echo "1. Review the failing test output above" >> >> $GITHUB_STEP_SUMMARY 
+            echo "2. Fix the faling tests locally" >> >> $GITHUB_STEP_SUMMARY 
+            echo "3. Run /`np test'/ locally to verfiy fixes" >> >> $GITHUB_STEP_SUMMARY 
+            echo "4. Commit and push your changes" >> >> $GITHUB_STEP_SUMMARY 
+          fi
+
+      - name: Annotate test failures
+        if: failure()
+        run: |
+          echo "::error::Test suite failed - Please check the test output for specific failure details"
+          echo "::notice::Run 'npm test' locally to reproduce and debug the failing test"
