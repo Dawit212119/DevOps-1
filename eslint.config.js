@@ -1,4 +1,7 @@
 import js from '@eslint/js';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 export default [
   js.configs.recommended,
@@ -51,3 +54,4 @@ export default [
     ignores: ['node_modules/**', 'coverage/**', 'logs/**', 'drizzle/**'],
   },
 ];
+
