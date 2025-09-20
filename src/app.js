@@ -5,6 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { logger } from '#config/logger.js';
 import authRoute from '#routes/auth.route.js';
+import usersRoutes from 'routes/users.route.js';
 // import securityMiddleware from './middleware/security.middleware';
 const app = express();
 app.use(helmet());
@@ -37,6 +38,8 @@ app.get('/api', (req, res) => {
   });
 });
 app.use('/api/auth', authRoute);
+app.use('api/users', usersRoutes);
+
 (app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 }),

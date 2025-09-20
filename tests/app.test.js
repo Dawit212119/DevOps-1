@@ -64,4 +64,14 @@ describe('API EndPoints', () => {
       expect(res.body.user).toHaveProperty('role', 'user');
     });
   });
+
+  describe('POST /api/auth/sign-out', () => {
+    it('should logout the user', async () => {
+      const res = await request(app).post('/api/auth/sign-out').expect(200);
+      expect(res.body).toHaveProperty(
+        'message',
+        'User signed out successfully'
+      );
+    });
+  });
 });
